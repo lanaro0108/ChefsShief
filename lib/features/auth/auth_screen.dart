@@ -264,7 +264,11 @@ class _AuthScreenState extends State<AuthScreen> {
                 child: Container(
                   margin: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: ShelfColors.ink,
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [ShelfColors.olive, ShelfColors.ink],
+                    ),
                     borderRadius: BorderRadius.circular(30),
                   ),
                   padding: const EdgeInsets.all(48),
@@ -272,18 +276,22 @@ class _AuthScreenState extends State<AuthScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
-                        Icons.soup_kitchen_outlined,
-                        color: ShelfColors.white,
-                        size: 100,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(22),
+                        child: const RecipeImage(
+                          url:
+                              'https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg',
+                          height: 220,
+                        ),
                       ),
                       const SizedBox(height: 38),
                       const Text(
                         'Um mundo de sabores.\nUm caderno só seu.',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 44,
-                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Lora',
+                          fontSize: 38,
+                          fontWeight: FontWeight.w600,
                           height: 1.15,
                           letterSpacing: -1.5,
                         ),

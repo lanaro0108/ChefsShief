@@ -20,6 +20,13 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   fonts:
+    # Bundle the engine fallback too, so startup never downloads Roboto.
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+    - family: Lora
+      fonts:
+        - asset: assets/fonts/Lora-Variable.ttf
     - family: Poppins
       fonts:
         - asset: assets/fonts/Poppins-Regular.ttf

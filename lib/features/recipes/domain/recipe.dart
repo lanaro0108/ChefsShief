@@ -24,6 +24,28 @@ class Recipe {
   final String sourceId;
   final DateTime? savedAt;
 
+  bool get isPreview => ingredients.isEmpty || instructions.isEmpty;
+
+  factory Recipe.fromMealSummary(
+    Map<String, dynamic> meal, {
+    String category = '',
+  }) {
+    final id = (meal['idMeal'] as String? ?? '').trim();
+    final title = (meal['strMeal'] as String? ?? '').trim();
+    if (!RegExp(r'^[0-9]{1,32}$').hasMatch(id) || title.isEmpty) {
+      throw const FormatException('Resumo de receita inválido.');
+    }
+    return Recipe(
+      id: 'meal_$id',
+      sourceId: id,
+      title: title,
+      ingredients: const [],
+      instructions: const [],
+      imageUrl: safeImage(meal['strMealThumb'] as String? ?? ''),
+      category: category,
+    );
+  }
+
   static String safeImage(String value) {
     final uri = Uri.tryParse(value);
     return uri != null && uri.scheme == 'https' && uri.host.isNotEmpty

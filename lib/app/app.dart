@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import '../core/widgets.dart';
+import '../core/kitchen_backdrop.dart';
 import '../features/auth/auth_screen.dart';
 import '../features/auth/auth_service.dart';
 import '../features/recipes/data/meal_api.dart';
@@ -29,6 +30,8 @@ class ChefsShelfApp extends StatelessWidget {
       title: 'Chef’s Shelf · Seu caderno de receitas',
       debugShowCheckedModeBanner: false,
       theme: shelfTheme(),
+      builder: (context, child) =>
+          KitchenBackdrop(child: child ?? const SizedBox.shrink()),
       locale: const Locale('pt', 'BR'),
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: const [Locale('pt', 'BR')],
@@ -71,6 +74,8 @@ class SetupApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: shelfTheme(),
+    builder: (context, child) =>
+        KitchenBackdrop(child: child ?? const SizedBox.shrink()),
     home: Scaffold(
       body: StatusPanel(
         icon: Icons.restaurant_menu,

@@ -21,7 +21,15 @@ Outras telas: [login](docs/screenshots/01-login-desktop.png), [detalhes e person
 - Layout adaptável a celular e desktop; Android e web no mesmo código.
 - Tratamento de busca vazia, erros de conexão, API indisponível, imagem ausente e falhas de autenticação.
 
-O catálogo original está em **inglês**: pesquise por `chicken`, `pasta`, `cake` ou pelo nome de um prato. A interface está em português. A chave pública `1` do TheMealDB é destinada a desenvolvimento/uso educacional; confira os [termos da API](https://www.themealdb.com/api.php) antes de uma distribuição comercial.
+A interface está em português. Buscas como `frango`, `massas`, `sobremesas` e `vegetariano` usam as categorias reais do TheMealDB. Termos comuns como `bolo de chocolate`, `arroz` e `lasanha` têm equivalentes em inglês; nomes internacionais e termos ainda não mapeados são enviados como digitados.
+
+Ao abrir uma receita do catálogo, o app traduz título, ingredientes, medidas e preparo para português. Categorias e origens têm rótulos locais. A tradução mantém as unidades originais: libra não é convertida automaticamente para gramas. O botão **Ver original** permite conferir a fonte; no caderno, essa consulta não substitui sua versão.
+
+A tradução usa o endpoint HTTPS documentado [MyMemory](https://mymemory.translated.net/doc/spec.php), sem chave, e um glossário culinário local. O serviço anônimo tem cota diária e pode ficar indisponível; nesses casos o app mostra o motivo, mantém o original e permite tentar novamente ou salvar o original explicitamente. Somente textos públicos do catálogo são enviados ao serviço. Notas e edições do caderno não são traduzidas nem enviadas automaticamente.
+
+O cache de tradução é limitado e dura a sessão, com chave pelo conteúdo da receita; versões salvas no Firestore mantêm o texto traduzido. Receitas já editadas permanecem intactas. Consultas por categoria carregam resumos e buscam ingredientes/preparo apenas ao abrir ou salvar. A chave pública `1` do TheMealDB é destinada a desenvolvimento/uso educacional; confira os [termos da API](https://www.themealdb.com/api.php) antes de uma distribuição comercial.
+
+A descoberta mostra 12 cartões inicialmente e oferece **Ver mais receitas**. Isso evita baixar as fotos de toda uma categoria de uma vez. Categorias e todas as origens do catálogo consultado têm rótulos locais em português.
 
 ## Começar localmente, sem conta Firebase
 
@@ -157,8 +165,8 @@ Um documento por receita em `users/{uid}/recipes/meal_{idMeal}`:
 
 ```javascript
 {
-  title: "Spicy Arrabiata Penne",
-  ingredients: ["1 pound penne rigate", "1/4 cup olive oil", "3 cloves garlic"],
+  title: "Penne ao molho arrabbiata",
+  ingredients: ["1 libra de penne rigate", "1/4 xícara de azeite", "3 dentes de alho"],
   instructions: ["Aqueça o azeite...", "Cozinhe a massa...", "Misture e sirva..."],
   imageUrl: "https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg",
   category: "Vegetarian",
@@ -221,4 +229,12 @@ Revise `git diff` e rode os testes antes dos commits. Use mensagens para mudanç
 
 Tipografia Poppins incluída no aplicativo (pesos 400, 500, 600, 700 e 800), licenciada sob a SIL Open Font License em `assets/fonts/Poppins-OFL.txt`. Não há download de fontes durante o uso.
 
-Paleta: vermelho vibrante `#FF3030`, vermelho escuro `#D92525`, preto `#15191F`, branco `#FFFFFF`, fundo `#FAFAFA`, cinza claro `#F3F4F6`, texto secundário `#757575` e bordas `#E5E7EB`. Botões com texto branco usam vermelho escuro para legibilidade. O logo foi reproduzido em vetor a partir da referência fornecida, com três cápsulas vermelhas inclinadas e a assinatura Chef’s Shelf.
+Títulos usam Lora, incluída em `assets/fonts/Lora-Variable.ttf` sob a SIL Open Font License (`Lora-OFL.txt`), e controles mantêm Poppins. O fundo é desenhado em vetor: papel marfim com grão discreto e ramos de ervas. A área de ingredientes tem aparência de folha pautada e contador de itens separados; parágrafos longos do preparo são apresentados em passos menores.
+
+Paleta atual: marfim `#F7F1E6`, papel `#FFFCF5`, oliva `#556B45`, vermelho de ação `#B83226` e tinta `#292820`. O vermelho `#FF3030` do logo é preservado.
+
+O logo mantém as três cápsulas vermelhas inclinadas e a assinatura Chef’s Shelf. A fonte padrão de reserva do motor web também usa o arquivo local de Poppins, evitando uma busca externa por Roboto durante a inicialização.
+
+Os testes de tradução usam respostas controladas para verificar cache, preservação de quantidades, cotas e recuperação de falhas. No teste de navegador, apenas o serviço de tradução é simulado; Auth, Firestore e TheMealDB continuam reais. Em ambientes com lista de domínios permitidos, libere também `api.mymemory.translated.net` para validar a tradução ao vivo.
+
+Se o Chromium do ambiente gerenciado não conhecer a CA do proxy, execute o teste de navegador com `CHEFS_PROXY_CA_FETCH=1`. Essa opção busca os arquivos reais do SDK Firebase e as respostas e fotografias reais do TheMealDB com `curl`, usando a CA configurada e verificação TLS ativa. Ela só muda o transporte do teste e não é usada pelo aplicativo nem pela CI pública.
