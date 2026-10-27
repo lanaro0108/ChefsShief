@@ -30,7 +30,8 @@ class ChefsShelfApp extends StatelessWidget {
       title: 'Chef’s Shelf · Seu caderno de receitas',
       debugShowCheckedModeBanner: false,
       theme: shelfTheme(),
-      builder: (context, child) => KitchenBackdrop(child: child ?? const SizedBox.shrink()),
+      builder: (context, child) =>
+          KitchenBackdrop(child: child ?? const SizedBox.shrink()),
       locale: const Locale('pt', 'BR'),
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: const [Locale('pt', 'BR')],
@@ -73,7 +74,8 @@ class SetupApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: shelfTheme(),
-      builder: (context, child) => KitchenBackdrop(child: child ?? const SizedBox.shrink()),
+    builder: (context, child) =>
+        KitchenBackdrop(child: child ?? const SizedBox.shrink()),
     home: Scaffold(
       body: StatusPanel(
         icon: Icons.restaurant_menu,

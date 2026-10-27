@@ -76,7 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         showMessage(
           context,
-          failure is AppFailure ? failure.message : 'Não foi possível salvar. Confira sua conexão e tente novamente.',
+          failure is AppFailure
+              ? failure.message
+              : 'Não foi possível salvar. Confira sua conexão e tente novamente.',
         );
       }
     } finally {
@@ -103,7 +105,12 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     } catch (failure) {
       if (mounted) {
-        showMessage(context, failure is AppFailure ? failure.message : 'Não foi possível abrir a receita. Tente novamente.');
+        showMessage(
+          context,
+          failure is AppFailure
+              ? failure.message
+              : 'Não foi possível abrir a receita. Tente novamente.',
+        );
       }
     } finally {
       if (mounted) setState(() => _opening.remove(recipe.id));
@@ -536,9 +543,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (discovering) ...[
                   DiscoveryHero(
                     recipe: _search.recipes.first,
-                    title: widget.api.translator.titleFor(_search.recipes.first),
+                    title: widget.api.translator.titleFor(
+                      _search.recipes.first,
+                    ),
                     busy: _opening.contains(_search.recipes.first.id),
-                    onOpen: () => _open(_search.recipes.first, saved.any((recipe) => recipe.id == _search.recipes.first.id)),
+                    onOpen: () => _open(
+                      _search.recipes.first,
+                      saved.any(
+                        (recipe) => recipe.id == _search.recipes.first.id,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 30),
                 ],
@@ -581,10 +595,23 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: width,
                           child: RecipeCard(
                             recipe: recipe,
-                            displayTitle: widget.api.translator.titleFor(recipe),
+                            displayTitle: widget.api.translator.titleFor(
+                              recipe,
+                            ),
                             saved: isSaved,
-                            busy: _saving.contains(recipe.id) || _opening.contains(recipe.id),
-                            onOpen: () => _open(saved.where((savedRecipe) => savedRecipe.id == recipe.id).firstOrNull ?? recipe, isSaved),
+                            busy:
+                                _saving.contains(recipe.id) ||
+                                _opening.contains(recipe.id),
+                            onOpen: () => _open(
+                              saved
+                                      .where(
+                                        (savedRecipe) =>
+                                            savedRecipe.id == recipe.id,
+                                      )
+                                      .firstOrNull ??
+                                  recipe,
+                              isSaved,
+                            ),
                             onSave: () => _save(recipe),
                           ),
                         );

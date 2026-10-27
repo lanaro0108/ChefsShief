@@ -48,7 +48,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     }
   }
 
-
   Future<void> _translate() async {
     if (_translating || widget.initiallySaved) return;
     setState(() {
@@ -60,9 +59,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       if (mounted) setState(() => _translated = recipe);
     } catch (failure) {
       if (mounted) {
-        setState(() => _translationError = failure is AppFailure
-            ? failure.message
-            : 'Não foi possível traduzir agora. A receita original está disponível.');
+        setState(
+          () => _translationError = failure is AppFailure
+              ? failure.message
+              : 'Não foi possível traduzir agora. A receita original está disponível.',
+        );
       }
     } finally {
       if (mounted) setState(() => _translating = false);
@@ -79,7 +80,12 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         _originalRecipe = original;
       } catch (failure) {
         if (mounted) {
-          showMessage(context, failure is AppFailure ? failure.message : 'Não foi possível consultar a receita original.');
+          showMessage(
+            context,
+            failure is AppFailure
+                ? failure.message
+                : 'Não foi possível consultar a receita original.',
+          );
         }
         return;
       } finally {
@@ -102,15 +108,31 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           padding: EdgeInsets.only(bottom: 12),
           child: Row(
             children: [
-              SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+              SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
               SizedBox(width: 10),
-              Expanded(child: Text('Traduzindo receita para português…', style: TextStyle(fontSize: 12))),
+              Expanded(
+                child: Text(
+                  'Traduzindo receita para português…',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
             ],
           ),
         ),
       if (_translationError != null && !saved) ...[
-        Text(_translationError!, style: const TextStyle(color: ShelfColors.darkRed, fontSize: 12)),
-        TextButton.icon(onPressed: _translate, icon: const Icon(Icons.refresh, size: 18), label: const Text('Tentar traduzir')),
+        Text(
+          _translationError!,
+          style: const TextStyle(color: ShelfColors.darkRed, fontSize: 12),
+        ),
+        TextButton.icon(
+          onPressed: _translate,
+          icon: const Icon(Icons.refresh, size: 18),
+          label: const Text('Tentar traduzir'),
+        ),
       ],
       Wrap(
         spacing: 12,
@@ -118,13 +140,32 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Text(
-            _showOriginal ? 'RECEITA ORIGINAL · INGLÊS' : saved ? 'MINHA VERSÃO' : _translated != null ? 'RECEITA EM PORTUGUÊS' : 'RECEITA ORIGINAL · INGLÊS',
-            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: ShelfColors.olive, letterSpacing: .6),
+            _showOriginal
+                ? 'RECEITA ORIGINAL · INGLÊS'
+                : saved
+                ? 'MINHA VERSÃO'
+                : _translated != null
+                ? 'RECEITA EM PORTUGUÊS'
+                : 'RECEITA ORIGINAL · INGLÊS',
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              color: ShelfColors.olive,
+              letterSpacing: .6,
+            ),
           ),
           TextButton.icon(
             onPressed: _sourceLoading ? null : _toggleOriginal,
             icon: const Icon(Icons.translate_rounded, size: 17),
-            label: Text(_sourceLoading ? 'Carregando original…' : _showOriginal ? saved ? 'Voltar para minha receita' : 'Voltar à receita' : 'Ver original'),
+            label: Text(
+              _sourceLoading
+                  ? 'Carregando original…'
+                  : _showOriginal
+                  ? saved
+                        ? 'Voltar para minha receita'
+                        : 'Voltar à receita'
+                  : 'Ver original',
+            ),
           ),
         ],
       ),
@@ -225,7 +266,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       }
       final saved = stored != null;
       final personal = stored ?? _translated ?? widget.initial;
-      final recipe = _showOriginal ? _originalRecipe ?? widget.initial : personal;
+      final recipe = _showOriginal
+          ? _originalRecipe ?? widget.initial
+          : personal;
       final steps = RecipeLanguage.readableSteps(recipe.instructions);
       final missing = widget.initiallySaved && snapshot.hasData && !saved;
       return Scaffold(
@@ -299,7 +342,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                           Icons.restaurant_outlined,
                                           size: 17,
                                         ),
-                                        label: Text(RecipeLanguage.category(recipe.category)),
+                                        label: Text(
+                                          RecipeLanguage.category(
+                                            recipe.category,
+                                          ),
+                                        ),
                                       ),
                                     if (recipe.area.isNotEmpty)
                                       Chip(
@@ -307,7 +354,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                           Icons.public_outlined,
                                           size: 17,
                                         ),
-                                        label: Text(RecipeLanguage.area(recipe.area)),
+                                        label: Text(
+                                          RecipeLanguage.area(recipe.area),
+                                        ),
                                       ),
                                     Chip(
                                       label: Text(
@@ -325,13 +374,20 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                   children: [
                                     if (!saved)
                                       FilledButton.icon(
-                                        onPressed: _busy || _translating || snapshot.hasError
+                                        onPressed:
+                                            _busy ||
+                                                _translating ||
+                                                snapshot.hasError
                                             ? null
                                             : () => _save(personal),
                                         icon: const Icon(
                                           Icons.bookmark_add_outlined,
                                         ),
-                                        label: Text(_translated == null && !_translating ? 'Salvar original no caderno' : 'Salvar no caderno'),
+                                        label: Text(
+                                          _translated == null && !_translating
+                                              ? 'Salvar original no caderno'
+                                              : 'Salvar no caderno',
+                                        ),
                                       )
                                     else ...[
                                       FilledButton.icon(
@@ -388,61 +444,73 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         const SizedBox(height: 24),
                         LayoutBuilder(
                           builder: (context, constraints) {
-                            final ingredients = NotebookPaper(child: Container(
-                              padding: const EdgeInsets.all(22),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Na bancada',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleLarge,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  const Text(
-                                    'Marque o que já separou.',
-                                    style: TextStyle(
-                                      color: ShelfColors.muted,
-                                      fontSize: 12,
+                            final ingredients = NotebookPaper(
+                              child: Container(
+                                padding: const EdgeInsets.all(22),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Na bancada',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleLarge,
                                     ),
-                                  ),
-                                  const SizedBox(height: 14),
-                                  Semantics(
-                                    liveRegion: true,
-                                    child: Text('${_checked.length} de ${recipe.ingredients.length} ingredientes separados', style: const TextStyle(color: ShelfColors.olive, fontSize: 12)),
-                                  ),
-                                  if (_checked.isNotEmpty)
-                                    TextButton(onPressed: () => setState(_checked.clear), child: const Text('Limpar marcações')),
-                                  ...recipe.ingredients.asMap().entries.map(
-                                    (e) => CheckboxListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      controlAffinity:
-                                          ListTileControlAffinity.leading,
-                                      value: _checked.contains(e.key),
-                                      title: Text(
-                                        e.value,
-                                        style: TextStyle(
-                                          decoration: _checked.contains(e.key)
-                                              ? TextDecoration.lineThrough
-                                              : null,
-                                          color: _checked.contains(e.key)
-                                              ? ShelfColors.muted
-                                              : ShelfColors.ink,
+                                    const SizedBox(height: 8),
+                                    const Text(
+                                      'Marque o que já separou.',
+                                      style: TextStyle(
+                                        color: ShelfColors.muted,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 14),
+                                    Semantics(
+                                      liveRegion: true,
+                                      child: Text(
+                                        '${_checked.length} de ${recipe.ingredients.length} ingredientes separados',
+                                        style: const TextStyle(
+                                          color: ShelfColors.olive,
+                                          fontSize: 12,
                                         ),
                                       ),
-                                      onChanged: (checked) => setState(() {
-                                        if (checked == true) {
-                                          _checked.add(e.key);
-                                        } else {
-                                          _checked.remove(e.key);
-                                        }
-                                      }),
                                     ),
-                                  ),
-                                ],
+                                    if (_checked.isNotEmpty)
+                                      TextButton(
+                                        onPressed: () =>
+                                            setState(_checked.clear),
+                                        child: const Text('Limpar marcações'),
+                                      ),
+                                    ...recipe.ingredients.asMap().entries.map(
+                                      (e) => CheckboxListTile(
+                                        contentPadding: EdgeInsets.zero,
+                                        controlAffinity:
+                                            ListTileControlAffinity.leading,
+                                        value: _checked.contains(e.key),
+                                        title: Text(
+                                          e.value,
+                                          style: TextStyle(
+                                            decoration: _checked.contains(e.key)
+                                                ? TextDecoration.lineThrough
+                                                : null,
+                                            color: _checked.contains(e.key)
+                                                ? ShelfColors.muted
+                                                : ShelfColors.ink,
+                                          ),
+                                        ),
+                                        onChanged: (checked) => setState(() {
+                                          if (checked == true) {
+                                            _checked.add(e.key);
+                                          } else {
+                                            _checked.remove(e.key);
+                                          }
+                                        }),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ));
+                            );
                             final instructions = Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

@@ -8,33 +8,47 @@ import 'recipe_translator.dart';
 
 class MealApi {
   MealApi(this.client, {RecipeTranslator? translator})
-      : translator = translator ?? RecipeTranslator(client);
+    : translator = translator ?? RecipeTranslator(client);
   final http.Client client;
   final RecipeTranslator translator;
   final _details = <String, Recipe>{};
   final _pending = <String, Future<Recipe>>{};
 
-  Future<Map<String, dynamic>> _get(String path, Map<String, String> query) async {
+  Future<Map<String, dynamic>> _get(
+    String path,
+    Map<String, String> query,
+  ) async {
     try {
       final response = await client
           .get(Uri.https('www.themealdb.com', '/api/json/v1/1/$path', query))
           .timeout(const Duration(seconds: 15));
       if (response.statusCode != 200) {
-        throw const AppFailure('O catálogo está indisponível. Tente novamente.');
+        throw const AppFailure(
+          'O catálogo está indisponível. Tente novamente.',
+        );
       }
-      final body = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      final body =
+          jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       if (!body.containsKey('meals')) throw const FormatException();
       return body;
     } on AppFailure {
       rethrow;
     } on TimeoutException {
-      throw const AppFailure('A busca demorou demais. Confira sua conexão e tente de novo.');
+      throw const AppFailure(
+        'A busca demorou demais. Confira sua conexão e tente de novo.',
+      );
     } on FormatException {
-      throw const AppFailure('O catálogo enviou dados inválidos. Tente novamente mais tarde.');
+      throw const AppFailure(
+        'O catálogo enviou dados inválidos. Tente novamente mais tarde.',
+      );
     } on TypeError {
-      throw const AppFailure('O catálogo enviou dados inválidos. Tente novamente mais tarde.');
+      throw const AppFailure(
+        'O catálogo enviou dados inválidos. Tente novamente mais tarde.',
+      );
     } on http.ClientException {
-      throw const AppFailure('Não foi possível conectar ao catálogo. Confira sua internet.');
+      throw const AppFailure(
+        'Não foi possível conectar ao catálogo. Confira sua internet.',
+      );
     }
   }
 
@@ -48,20 +62,26 @@ class MealApi {
     );
     try {
       final meals = body['meals'] as List?;
-      final recipes = meals?.map((item) {
-        final meal = item as Map<String, dynamic>;
-        return category == null
-            ? Recipe.fromMeal(meal)
-            : Recipe.fromMealSummary(meal, category: category);
-      }).toList() ?? <Recipe>[];
+      final recipes =
+          meals?.map((item) {
+            final meal = item as Map<String, dynamic>;
+            return category == null
+                ? Recipe.fromMeal(meal)
+                : Recipe.fromMealSummary(meal, category: category);
+          }).toList() ??
+          <Recipe>[];
       for (final recipe in recipes.where((recipe) => !recipe.isPreview)) {
         _remember(recipe);
       }
       return recipes;
     } on FormatException {
-      throw const AppFailure('O catálogo enviou uma receita incompleta. Tente novamente.');
+      throw const AppFailure(
+        'O catálogo enviou uma receita incompleta. Tente novamente.',
+      );
     } on TypeError {
-      throw const AppFailure('O catálogo enviou dados inválidos. Tente novamente mais tarde.');
+      throw const AppFailure(
+        'O catálogo enviou dados inválidos. Tente novamente mais tarde.',
+      );
     }
   }
 
@@ -100,7 +120,9 @@ class MealApi {
     } on FormatException {
       throw const AppFailure('Não foi possível carregar a receita completa.');
     } on TypeError {
-      throw const AppFailure('O catálogo enviou dados inválidos. Tente novamente.');
+      throw const AppFailure(
+        'O catálogo enviou dados inválidos. Tente novamente.',
+      );
     }
   }
 }

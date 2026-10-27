@@ -279,7 +279,8 @@ class _AuthScreenState extends State<AuthScreen> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(22),
                         child: const RecipeImage(
-                          url: 'https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg',
+                          url:
+                              'https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg',
                           height: 220,
                         ),
                       ),

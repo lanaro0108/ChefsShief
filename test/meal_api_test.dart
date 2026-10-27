@@ -98,56 +98,83 @@ void main() {
       await pending;
     },
   );
-  test('Portuguese category search uses filter.php and loads details only on demand', () async {
-    final requests = <Uri>[];
-    final api = MealApi(MockClient((request) async {
-      requests.add(request.url);
-      if (request.url.path.endsWith('filter.php')) {
-        expect(request.url.queryParameters['c'], 'Vegetarian');
-        return http.Response(jsonEncode({
-          'meals': [{'idMeal': '52771', 'strMeal': 'Penne', 'strMealThumb': ''}],
-        }), 200);
-      }
-      expect(request.url.path, endsWith('lookup.php'));
-      expect(request.url.queryParameters['i'], '52771');
-      return http.Response(jsonEncode({'meals': [mealFixture()]}), 200);
-    }));
-    final previews = await api.search('vegetariano');
-    expect(previews.single.isPreview, isTrue);
-    expect(requests.length, 1);
-    final full = await Future.wait([api.complete(previews.single), api.complete(previews.single)]);
-    expect(full.first.isPreview, isFalse);
-    expect(full.first.ingredients, isNotEmpty);
-    expect(requests.length, 2);
-    await api.complete(previews.single);
-    expect(requests.length, 2);
-  });
+  test(
+    'Portuguese category search uses filter.php and loads details only on demand',
+    () async {
+      final requests = <Uri>[];
+      final api = MealApi(
+        MockClient((request) async {
+          requests.add(request.url);
+          if (request.url.path.endsWith('filter.php')) {
+            expect(request.url.queryParameters['c'], 'Vegetarian');
+            return http.Response(
+              jsonEncode({
+                'meals': [
+                  {'idMeal': '52771', 'strMeal': 'Penne', 'strMealThumb': ''},
+                ],
+              }),
+              200,
+            );
+          }
+          expect(request.url.path, endsWith('lookup.php'));
+          expect(request.url.queryParameters['i'], '52771');
+          return http.Response(
+            jsonEncode({
+              'meals': [mealFixture()],
+            }),
+            200,
+          );
+        }),
+      );
+      final previews = await api.search('vegetariano');
+      expect(previews.single.isPreview, isTrue);
+      expect(requests.length, 1);
+      final full = await Future.wait([
+        api.complete(previews.single),
+        api.complete(previews.single),
+      ]);
+      expect(full.first.isPreview, isFalse);
+      expect(full.first.ingredients, isNotEmpty);
+      expect(requests.length, 2);
+      await api.complete(previews.single);
+      expect(requests.length, 2);
+    },
+  );
 
-  test('Portuguese dish aliases preserve international names and query encoding', () async {
-    final sent = <String?>[];
-    final api = MealApi(MockClient((request) async {
-      sent.add(request.url.queryParameters['s']);
-      return http.Response('{"meals":null}', 200);
-    }));
-    await api.search('bolo de chocolate');
-    await api.search('Arrabiata');
-    await api.search('fish & chips');
-    expect(sent, ['chocolate cake', 'Arrabiata', 'fish & chips']);
-  });
+  test(
+    'Portuguese dish aliases preserve international names and query encoding',
+    () async {
+      final sent = <String?>[];
+      final api = MealApi(
+        MockClient((request) async {
+          sent.add(request.url.queryParameters['s']);
+          return http.Response('{"meals":null}', 200);
+        }),
+      );
+      await api.search('bolo de chocolate');
+      await api.search('Arrabiata');
+      await api.search('fish & chips');
+      expect(sent, ['chocolate cake', 'Arrabiata', 'fish & chips']);
+    },
+  );
 
   test('a failed or mismatched detail lookup is not cached', () async {
     var correct = false;
     var calls = 0;
-    final api = MealApi(MockClient((_) async {
-      calls++;
-      return http.Response(jsonEncode({
-        'meals': [mealFixture(id: correct ? '52771' : '999')],
-      }), 200);
-    }));
+    final api = MealApi(
+      MockClient((_) async {
+        calls++;
+        return http.Response(
+          jsonEncode({
+            'meals': [mealFixture(id: correct ? '52771' : '999')],
+          }),
+          200,
+        );
+      }),
+    );
     await expectLater(api.original('52771'), throwsA(isA<AppFailure>()));
     correct = true;
     expect((await api.original('52771')).sourceId, '52771');
     expect(calls, 2);
   });
-
 }

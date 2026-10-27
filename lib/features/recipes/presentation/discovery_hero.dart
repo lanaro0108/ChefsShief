@@ -64,7 +64,11 @@ class DiscoveryHero extends StatelessWidget {
                     foregroundColor: ShelfColors.ink,
                   ),
                   icon: busy
-                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
                       : const Icon(Icons.restaurant_menu_rounded, size: 18),
                   label: const Text('Preparar este prato'),
                 ),

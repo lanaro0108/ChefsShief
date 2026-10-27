@@ -72,11 +72,22 @@ class RecipeCard extends StatelessWidget {
                     displayTitle ?? recipe.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontFamily: 'Lora', fontSize: 20, fontWeight: FontWeight.w600, height: 1.35),
+                    style: const TextStyle(
+                      fontFamily: 'Lora',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      height: 1.35,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   if (!recipe.isPreview)
-                    Text('${recipe.ingredients.length} ingredientes', style: const TextStyle(color: ShelfColors.muted, fontSize: 11)),
+                    Text(
+                      '${recipe.ingredients.length} ingredientes',
+                      style: const TextStyle(
+                        color: ShelfColors.muted,
+                        fontSize: 11,
+                      ),
+                    ),
                   const SizedBox(height: 6),
                   Row(
                     children: [

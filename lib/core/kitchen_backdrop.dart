@@ -8,10 +8,8 @@ class KitchenBackdrop extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => CustomPaint(
-    painter: const _KitchenPaperPainter(),
-    child: child,
-  );
+  Widget build(BuildContext context) =>
+      CustomPaint(painter: const _KitchenPaperPainter(), child: child);
 }
 
 class _KitchenPaperPainter extends CustomPainter {
@@ -19,7 +17,10 @@ class _KitchenPaperPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(Offset.zero & size, Paint()..color = ShelfColors.background);
+    canvas.drawRect(
+      Offset.zero & size,
+      Paint()..color = ShelfColors.background,
+    );
     final grain = Paint()..color = ShelfColors.ink.withValues(alpha: .035);
     for (var y = 8.0; y < size.height; y += 24) {
       for (var x = 9.0; x < size.width; x += 24) {
@@ -39,7 +40,12 @@ class _KitchenPaperPainter extends CustomPainter {
       ..color = ShelfColors.olive.withValues(alpha: .08)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.6;
-    canvas.drawPath(Path()..moveTo(0, 0)..quadraticBezierTo(-24, 90, 0, 210), stroke);
+    canvas.drawPath(
+      Path()
+        ..moveTo(0, 0)
+        ..quadraticBezierTo(-24, 90, 0, 210),
+      stroke,
+    );
     for (var index = 0; index < 6; index++) {
       final y = 28.0 + index * 29;
       for (final direction in [-1.0, 1.0]) {
@@ -88,9 +94,16 @@ class _RuledPaperPainter extends CustomPainter {
       ..color = ShelfColors.line.withValues(alpha: .32)
       ..strokeWidth = .6;
     for (var y = 132.0; y < size.height; y += 48) {
-      canvas.drawLine(Offset(16, y), Offset(math.max(16.0, size.width - 16), y), paint);
+      canvas.drawLine(
+        Offset(16, y),
+        Offset(math.max(16.0, size.width - 16), y),
+        paint,
+      );
     }
-    canvas.drawRect(const Rect.fromLTWH(0, 0, 5, 80), Paint()..color = ShelfColors.olive);
+    canvas.drawRect(
+      const Rect.fromLTWH(0, 0, 5, 80),
+      Paint()..color = ShelfColors.olive,
+    );
   }
 
   @override
