@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="description" content="Chef’s Shelf: descubra receitas do mundo e guarde-as em um caderno só seu.">
+  <meta name="theme-color" content="#244C3B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Chef’s Shelf">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>Chef’s Shelf · Seu caderno de receitas</title>
+  <style>
+    body { margin: 0; background: #faf8f3; }
+    #loading { min-height: 100vh; display: grid; place-content: center; text-align: center;
+      font: 16px system-ui, sans-serif; color: #244c3b; }
+    #loading strong { font-size: 30px; letter-spacing: -1px; }
+    /* The app shows its own localized emulator notice on Auth and Home. */
+    .firebase-emulator-warning { display: none; }
+  </style>
+</head>
+<body>
+  <div id="loading" role="status"><strong>Chef’s Shelf</strong><p>Preparando a cozinha…</p></div>
+  <script>
+    window.addEventListener('flutter-first-frame', () => document.getElementById('loading')?.remove());
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

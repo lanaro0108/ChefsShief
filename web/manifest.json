@@ -1,0 +1,12 @@
+{
+  "name": "Chef’s Shelf — Caderno de Receitas",
+  "short_name": "Chef’s Shelf",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#FAF8F3",
+  "theme_color": "#244C3B",
+  "description": "Descubra, salve e personalize suas receitas favoritas.",
+  "orientation": "any",
+  "lang": "pt-BR",
+  "prefer_related_applications": false
+}

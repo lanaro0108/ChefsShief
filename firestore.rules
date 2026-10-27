@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+    // Reversible join/split validates every element's string type. Padding
+    // permits cheap, explicit length checks without out-of-range access.
+    function stringList(v, maxLength) {
+      let padded = v.concat(['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+      return v is list && v.size() > 0 && v.size() <= 40 &&
+        !v.hasAny(['']) && v == v.join('\u001f').split('\u001f') &&
+        padded[0].size() <= maxLength &&
+        padded[1].size() <= maxLength &&
+        padded[2].size() <= maxLength &&
+        padded[3].size() <= maxLength &&
+        padded[4].size() <= maxLength &&
+        padded[5].size() <= maxLength &&
+        padded[6].size() <= maxLength &&
+        padded[7].size() <= maxLength &&
+        padded[8].size() <= maxLength &&
+        padded[9].size() <= maxLength &&
+        padded[10].size() <= maxLength &&
+        padded[11].size() <= maxLength &&
+        padded[12].size() <= maxLength &&
+        padded[13].size() <= maxLength &&
+        padded[14].size() <= maxLength &&
+        padded[15].size() <= maxLength &&
+        padded[16].size() <= maxLength &&
+        padded[17].size() <= maxLength &&
+        padded[18].size() <= maxLength &&
+        padded[19].size() <= maxLength &&
+        padded[20].size() <= maxLength &&
+        padded[21].size() <= maxLength &&
+        padded[22].size() <= maxLength &&
+        padded[23].size() <= maxLength &&
+        padded[24].size() <= maxLength &&
+        padded[25].size() <= maxLength &&
+        padded[26].size() <= maxLength &&
+        padded[27].size() <= maxLength &&
+        padded[28].size() <= maxLength &&
+        padded[29].size() <= maxLength &&
+        padded[30].size() <= maxLength &&
+        padded[31].size() <= maxLength &&
+        padded[32].size() <= maxLength &&
+        padded[33].size() <= maxLength &&
+        padded[34].size() <= maxLength &&
+        padded[35].size() <= maxLength &&
+        padded[36].size() <= maxLength &&
+        padded[37].size() <= maxLength &&
+        padded[38].size() <= maxLength &&
+        padded[39].size() <= maxLength;
+    }
+    function validRecipe(data, recipeId) {
+      // Every required field is accessed below; missing fields fail closed.
+      return data.keys().hasOnly(['title', 'ingredients', 'instructions', 'imageUrl',
+          'category', 'area', 'notes', 'sourceId', 'savedAt', 'updatedAt']) &&
+        data.title is string && data.title.size() > 0 && data.title.size() <= 120 &&
+        stringList(data.ingredients, 300) && stringList(data.instructions, 5000) &&
+        data.notes is string && data.notes.size() <= 2000 &&
+        data.category is string && data.category.size() <= 100 &&
+        data.area is string && data.area.size() <= 100 &&
+        data.imageUrl is string && data.imageUrl.size() <= 2048 &&
+        (data.imageUrl == '' || data.imageUrl.matches('https://www[.]themealdb[.]com/images/media/meals/.*')) &&
+        data.sourceId is string && data.sourceId.matches('[0-9]{1,32}') &&
+        recipeId == 'meal_' + data.sourceId &&
+        data.savedAt is timestamp && data.updatedAt == request.time;
+    }
+    match /users/{uid}/recipes/{recipeId} {
+      allow read: if owner(uid);
+      allow create, update: if owner(uid) && validRecipe(request.resource.data, recipeId) &&
+        (request.method == 'create' ? request.resource.data.savedAt == request.time :
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['title', 'ingredients', 'instructions', 'notes', 'updatedAt']));
+      allow delete: if owner(uid);
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
