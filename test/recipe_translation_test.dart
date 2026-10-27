@@ -28,6 +28,30 @@ http.Response translated(String text) => http.Response.bytes(
 );
 
 void main() {
+  test(
+    'international names and shared ingredient words may remain unchanged',
+    () async {
+      const recipe = Recipe(
+        id: 'meal_321',
+        sourceId: '321',
+        title: 'Sushi',
+        ingredients: ['100 g tofu'],
+        instructions: ['Heat for 2 minutes.'],
+      );
+      final translator = RecipeTranslator(
+        MockClient((request) async {
+          final text = request.url.queryParameters['q']!;
+          return translated(
+            text == 'Heat for 2 minutes.' ? 'Aqueça por 2 minutos.' : text,
+          );
+        }),
+      );
+      final result = await translator.translate(recipe);
+      expect(result.title, 'Sushi');
+      expect(result.ingredients, ['100 g tofu']);
+      expect(result.instructions, ['Aqueça por 2 minutos.']);
+    },
+  );
   test('all catalogue origins have local Portuguese labels', () {
     final body =
         jsonDecode(File('test/fixtures/areas.json').readAsStringSync())

@@ -169,9 +169,7 @@ class RecipeTranslator {
       final translated = _decodeEntities(
         (data['translatedText'] as String).trim(),
       );
-      if (translated.isEmpty ||
-          translated.toLowerCase() == text.toLowerCase() ||
-          translated.contains('\u001f')) {
+      if (translated.isEmpty || translated.contains('\u001f')) {
         throw const FormatException();
       }
       return translated;
