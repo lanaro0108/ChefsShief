@@ -29,6 +29,8 @@ A tradução usa o endpoint HTTPS documentado [MyMemory](https://mymemory.transl
 
 O cache de tradução é limitado e dura a sessão, com chave pelo conteúdo da receita; versões salvas no Firestore mantêm o texto traduzido. Receitas já editadas permanecem intactas. Consultas por categoria carregam resumos e buscam ingredientes/preparo apenas ao abrir ou salvar. A chave pública `1` do TheMealDB é destinada a desenvolvimento/uso educacional; confira os [termos da API](https://www.themealdb.com/api.php) antes de uma distribuição comercial.
 
+A descoberta mostra 12 cartões inicialmente e oferece **Ver mais receitas**. Isso evita baixar as fotos de toda uma categoria de uma vez. Categorias e todas as origens do catálogo consultado têm rótulos locais em português.
+
 ## Começar localmente, sem conta Firebase
 
 Pré-requisitos: **Flutter 3.38.10 / Dart 3.10.9**, **Node 22 ou 24**, **Java 21** e Git. A versão Flutter está em `.fvmrc`; dependências estão fixadas em `pubspec.lock` e `package-lock.json`.
@@ -235,4 +237,4 @@ O logo mantém as três cápsulas vermelhas inclinadas e a assinatura Chef’s S
 
 Os testes de tradução usam respostas controladas para verificar cache, preservação de quantidades, cotas e recuperação de falhas. No teste de navegador, apenas o serviço de tradução é simulado; Auth, Firestore e TheMealDB continuam reais. Em ambientes com lista de domínios permitidos, libere também `api.mymemory.translated.net` para validar a tradução ao vivo.
 
-Se o Chromium do ambiente gerenciado não conhecer a CA do proxy, execute o teste de navegador com `CHEFS_PROXY_CA_FETCH=1`. Essa opção busca os arquivos reais do SDK Firebase com `curl`, usando a CA configurada e verificação TLS ativa; o navegador recebe os mesmos módulos oficiais. Ela só muda o transporte do teste e não é usada pelo aplicativo nem pela CI pública.
+Se o Chromium do ambiente gerenciado não conhecer a CA do proxy, execute o teste de navegador com `CHEFS_PROXY_CA_FETCH=1`. Essa opção busca os arquivos reais do SDK Firebase e as respostas e fotografias reais do TheMealDB com `curl`, usando a CA configurada e verificação TLS ativa. Ela só muda o transporte do teste e não é usada pelo aplicativo nem pela CI pública.

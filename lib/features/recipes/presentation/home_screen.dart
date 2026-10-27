@@ -39,6 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final _saving = <String>{};
   final _opening = <String>{};
   int _tab = 0;
+  int _visibleCount = 12;
+  String _pagedQuery = '';
   String _category = 'Todas';
   bool _alphabetical = false;
 
@@ -355,6 +357,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _content(List<Recipe> saved, AsyncSnapshot<List<Recipe>> notebook) {
     final discovering = _tab == 0;
+    if (_pagedQuery != _search.query) {
+      _pagedQuery = _search.query;
+      _visibleCount = 12;
+    }
     final filtered = saved
         .where(
           (r) =>
@@ -373,6 +379,9 @@ class _HomeScreenState extends State<HomeScreen> {
       'Todas',
       ...saved.map((r) => r.category).where((s) => s.isNotEmpty),
     };
+    final displayed = discovering
+        ? _search.recipes.take(_visibleCount)
+        : filtered;
     return SingleChildScrollView(
       key: PageStorageKey('tab-$_tab'),
       padding: const EdgeInsets.all(24),
@@ -405,7 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 discovering
                     ? 'Descubra novos sabores e leia as receitas em português ao abrir.'
-                    : '${saved.length} receitas, muitas possibilidades. Tudo com o seu toque.',
+                    : '${RecipeLanguage.recipeCount(saved.length)}, muitas possibilidades. Tudo com o seu toque.',
                 style: const TextStyle(color: ShelfColors.muted, fontSize: 15),
               ),
               const SizedBox(height: 26),
@@ -564,7 +573,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const Spacer(),
                     Text(
-                      '${(discovering ? _search.recipes : filtered).length} receitas',
+                      RecipeLanguage.recipeCount(
+                        (discovering ? _search.recipes : filtered).length,
+                      ),
                       style: const TextStyle(
                         color: ShelfColors.muted,
                         fontSize: 12,
@@ -587,9 +598,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return Wrap(
                       spacing: 20,
                       runSpacing: 20,
-                      children: (discovering ? _search.recipes : filtered).map((
-                        recipe,
-                      ) {
+                      children: displayed.map((recipe) {
                         final isSaved = saved.any((r) => r.id == recipe.id);
                         return SizedBox(
                           width: width,
@@ -619,6 +628,30 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                 ),
+                if (discovering && _search.recipes.length > _visibleCount)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            'Mostrando ${displayed.length} de ${_search.recipes.length}',
+                            style: const TextStyle(
+                              color: ShelfColors.muted,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          OutlinedButton.icon(
+                            onPressed: () =>
+                                setState(() => _visibleCount += 12),
+                            icon: const Icon(Icons.add_rounded),
+                            label: const Text('Ver mais receitas'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
               ],
               const SizedBox(height: 36),
               const Divider(color: ShelfColors.line),

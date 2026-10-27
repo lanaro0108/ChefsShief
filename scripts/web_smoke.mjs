@@ -23,17 +23,20 @@ const context = await browser.newContext({ viewport: { width: 1440, height: 1000
 const page = await context.newPage();
 page.setDefaultTimeout(25000);
 // In managed environments Chromium may lack the proxy CA in its own store.
-// Fetch the real SDK through curl's configured CA trust; TLS stays verified.
+// Fetch real public SDK/catalogue resources through curl's configured CA trust.
+// TLS stays verified, and the catalogue responses are never mocked.
 // Public CI and normal browsers use their ordinary HTTPS transport.
+const resources = new Map();
 if (process.env.CHEFS_PROXY_CA_FETCH === '1') {
-  const resources = new Map();
   const run = promisify(execFile);
-  await page.route('https://www.gstatic.com/firebasejs/**', async route => {
+  await page.route(/^https:\/\/(?:www\.gstatic\.com\/firebasejs\/|www\.themealdb\.com\/)/, async route => {
     const url = route.request().url();
     if (!resources.has(url)) {
       resources.set(url, run('curl', ['--fail', '--silent', '--show-error', '--max-time', '30', url], {encoding: 'buffer', maxBuffer: 20 * 1024 * 1024}).then(result => result.stdout));
     }
-    await route.fulfill({body: await resources.get(url), contentType: 'application/javascript', headers: {'access-control-allow-origin': '*'}});
+    const path = new URL(url).pathname;
+    const contentType = path.startsWith('/api/') ? 'application/json' : /\.png$/i.test(path) ? 'image/png' : /\.jpe?g$/i.test(path) ? 'image/jpeg' : 'application/javascript';
+    await route.fulfill({body: await resources.get(url), contentType, headers: {'access-control-allow-origin': '*'}});
   });
 }
 await page.route('https://api.mymemory.translated.net/**', async route => {
@@ -55,13 +58,20 @@ async function openApp(target) {
   await target.goto(baseUrl);
   await target.locator('flt-semantics-placeholder').waitFor({state:'attached'});
   await target.locator('flt-semantics-placeholder').evaluate(element => element.click());
-  await target.getByRole('button', {name:'Entrar no meu caderno', exact:true}).waitFor();
+  await target.getByRole('button', {name:'Entrar no meu caderno', exact:true}).waitFor({timeout:60000});
 }
 async function fill(target, label, value) {
   await fillField(target, target.getByRole('textbox', { name: label }), value);
 }
 async function nextFrame(target) {
   await target.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+}
+async function capture(name) {
+  await Promise.allSettled([...resources.values()]);
+  await page.mouse.move(4, 4);
+  await nextFrame(page);
+  await page.waitForTimeout(200); // Let tooltip exit animations finish in screenshots.
+  await page.screenshot({path:`${output}/${name}`});
 }
 async function fillField(target, field, value) {
   await field.scrollIntoViewIfNeeded();
@@ -89,14 +99,19 @@ async function register(target, address) {
 
 try {
   await openApp(page);
-  await page.screenshot({path:`${output}/01-login-desktop.png`});
+  await capture('01-login-desktop.png');
   await register(page, email);
   console.log('PASS: UI registration and real Firebase Auth session.');
+  await page.getByRole('button', {name:'Preparar este prato', exact:true}).waitFor();
+  await page.getByRole('button', {name:'Preparar este prato', exact:true}).click();
+  await page.getByRole('checkbox').first().waitFor();
+  await page.getByRole('button', {name:'Voltar', exact:true}).click();
+  console.log('PASS: Portuguese category search and complete recipe lookup from a catalogue preview.');
   const search = page.getByRole('textbox', {name:'Buscar receitas', exact:true});
   await fillField(page, search, 'Arrabiata');
   await page.getByRole('button', {name:'Buscar agora', exact:true}).click();
   await page.getByRole('button', {name:'Abrir receita Penne ao molho arrabbiata', exact:true}).waitFor();
-  await page.screenshot({path:`${output}/02-descoberta-desktop.png`});
+  await capture('02-descoberta-desktop.png');
   await page.getByRole('button', {name:'Abrir receita Penne ao molho arrabbiata', exact:true}).click();
   await page.getByText('Na bancada', {exact:true}).waitFor();
   await page.getByText('Mãos à massa', {exact:true}).waitFor();
@@ -119,7 +134,8 @@ try {
   await page.getByRole('checkbox', {name:'300 g de penne', exact:true}).waitFor();
   await page.getByText('Prepare os ingredientes com carinho.', {exact:true}).waitFor();
   console.log('PASS: Flutter editor persists title, ingredient array, steps and personal notes.');
-  await page.screenshot({path:`${output}/03-receita-desktop.png`});
+  await page.waitForTimeout(4500); // Let success feedback leave the detail screenshot.
+  await capture('03-receita-desktop.png');
 
   await page.getByRole('button', {name:'Voltar', exact:true}).click();
   await page.getByText(/^Meu caderno/).first().click();
@@ -128,7 +144,7 @@ try {
   await page.waitForTimeout(4500); // Let the success snackbar leave the screenshot.
   await page.mouse.wheel(0,200);
   await nextFrame(page);
-  await page.screenshot({path:`${output}/04-caderno-mobile.png`});
+  await capture('04-caderno-mobile.png');
   await page.getByRole('button', {name:'Abrir receita Penne com meu toque', exact:true}).click();
   await page.getByRole('button', {name:'Remover', exact:true}).click();
   await page.getByRole('button', {name:'Manter receita', exact:true}).click();

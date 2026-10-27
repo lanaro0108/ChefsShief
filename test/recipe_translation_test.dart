@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chefs_shelf/core/app_failure.dart';
 import 'package:chefs_shelf/features/recipes/data/recipe_translator.dart';
 import 'package:chefs_shelf/features/recipes/domain/recipe.dart';
+import 'package:chefs_shelf/features/recipes/domain/recipe_language.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -27,6 +28,20 @@ http.Response translated(String text) => http.Response.bytes(
 );
 
 void main() {
+  test('all catalogue origins have local Portuguese labels', () {
+    final body =
+        jsonDecode(File('test/fixtures/areas.json').readAsStringSync())
+            as Map<String, dynamic>;
+    for (final area in body['meals'] as List) {
+      expect(
+        RecipeLanguage.areas.containsKey(area['strArea']),
+        isTrue,
+        reason: area['strArea'] as String,
+      );
+    }
+    expect(RecipeLanguage.recipeCount(1), '1 receita');
+    expect(RecipeLanguage.recipeCount(2), '2 receitas');
+  });
   test(
     'translates a complete snapshot, preserves measures, caches and never sends notes',
     () async {

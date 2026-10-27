@@ -1,6 +1,16 @@
 # Validação e limites da entrega
 
-## Verificado neste ambiente
+## Atualização de interface e tradução — 27/10/2026
+
+- Fundo vetorial de papel marfim e ervas, títulos Lora locais, destaque de receita responsivo e painel pautado para ingredientes com contador de itens separados.
+- Busca por categorias reais em português, carregamento completo de resumos ao abrir/salvar e cartões em blocos de 12.
+- Tradução de título, medidas, ingredientes e preparo, cache por conteúdo, consulta ao original e preservação de edições e notas pessoais. As origens atuais do catálogo têm rótulos locais.
+- `flutter analyze`: sem apontamentos. `flutter test --coverage`: **28 testes aprovados**. Testes oficiais de Auth/Firestore: **9 aprovados**. Web release compilada com recursos gráficos e fontes locais.
+- O teste de navegador validou cadastro, categorias, busca, detalhes em português, consulta ao original, salvamento, edição, exclusão, logout e login em desktop e celular. As capturas ficam em `docs/screenshots/`.
+
+O provedor de tradução online é simulado nos testes para evitar dependência de cota e disponibilidade. Há também uma receita completa com tradução revisada por conteúdo, coberta por fixture real do TheMealDB. API, SDK Firebase e emuladores continuam reais. O domínio do MyMemory não está liberado para acesso ao vivo neste ambiente; o app trata indisponibilidade/cota mantendo o original e a opção de tentar novamente. Nenhuma configuração de produção foi necessária para os testes. O APK Android não foi recompilado nesta alteração de interface e conteúdo.
+
+## Histórico da validação original
 
 | Verificação | Resultado |
 | --- | --- |
