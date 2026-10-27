@@ -6,7 +6,7 @@
 | --- | --- |
 | `dart format` | Código Dart formatado |
 | `flutter analyze` | Nenhum problema encontrado |
-| `flutter test --coverage` | **12 testes passaram**, sem testes ignorados |
+| `flutter test --coverage` | **13 testes passaram**, sem testes ignorados |
 | `npm run test:rules` | **9 testes passaram**, usando Auth e Firestore oficiais nos emuladores |
 | TheMealDB | Busca HTTPS real por `Arrabiata` retornou `Spicy Arrabiata Penne` |
 | Build web release | Compilou com recursos gráficos e fontes locais |
@@ -17,6 +17,8 @@
 O teste de navegador criou uma conta temporária, buscou uma receita real, exibiu detalhes, salvou no Firestore, editou título, ingrediente, passo e observações, abriu o caderno no celular, cancelou uma exclusão, confirmou a remoção, saiu e entrou novamente. Os testes de backend também verificaram recuperação de senha, snapshots em tempo real e tentativas de acesso entre contas.
 
 As regras foram testadas com todos os **40 itens** em ambos os arrays, inclusive ingredientes de 300 caracteres e passos de 5.000 caracteres, sem exceder o limite de avaliação do Firestore. Tipos incorretos, campos extras, datas adulteradas, URLs não permitidas e caracteres de controle usados como separadores foram rejeitados.
+
+Um teste de regressão verifica que campos opcionais Firebase não configurados são enviados como ausentes nas opções do SDK. O caso reproduziu o domínio vazio que fazia o Firebase Auth Android lançar `Given String is empty or null` ao cadastrar um usuário.
 
 Capturas reais do fluxo estão em [screenshots/](screenshots/). O APK local fica em `build/app/outputs/flutter-apk/app-debug.apk`; arquivos gerados, caches e logs não são versionados.
 

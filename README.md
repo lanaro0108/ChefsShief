@@ -99,6 +99,8 @@ flutter build apk --release --dart-define-from-file=config/firebase.android.json
 
 O arquivo `config/firebase.android.json` é carregado na compilação pela opção `--dart-define-from-file`. Os quatro campos obrigatórios são `FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_PROJECT_ID` e `FIREBASE_MESSAGING_SENDER_ID`; todos devem estar preenchidos com os valores do aplicativo Android registrado no Firebase.
 
+`FIREBASE_AUTH_DOMAIN` é opcional no Android. Quando esse campo está ausente ou vazio, o aplicativo omite o domínio nas opções do SDK. Isso evita a exceção nativa `Given String is empty or null` em `FirebaseAuth.setCustomAuthDomain` durante cadastro e login. Após atualizar o código, encerre a execução anterior e inicie novamente para reinicializar o SDK nativo.
+
 No **Android Studio**, abra **Run → Edit Configurations**, selecione a configuração Flutter de `lib/main.dart` e coloque em **Additional run args**:
 
 ```text

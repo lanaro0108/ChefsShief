@@ -25,12 +25,23 @@ abstract final class FirebaseConfig {
           projectId: 'demo-chefs-shelf',
           authDomain: 'demo-chefs-shelf.firebaseapp.com',
         )
-      : const FirebaseOptions(
+      : FirebaseOptions(
           apiKey: apiKey,
           appId: appId,
           messagingSenderId: senderId,
           projectId: projectId,
-          authDomain: String.fromEnvironment('FIREBASE_AUTH_DOMAIN'),
-          storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
+          authDomain: _optionalValue(
+            const String.fromEnvironment('FIREBASE_AUTH_DOMAIN'),
+          ),
+          storageBucket: _optionalValue(
+            const String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
+          ),
         );
+
+  // Native Firebase Auth interprets a non-null domain as a custom domain and
+  // rejects an empty string. Unset optional defines must stay null in the SDK.
+  static String? _optionalValue(String value) {
+    final normalized = value.trim();
+    return normalized.isEmpty ? null : normalized;
+  }
 }
