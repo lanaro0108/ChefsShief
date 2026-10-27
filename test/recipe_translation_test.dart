@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:chefs_shelf/core/app_failure.dart';
 import 'package:chefs_shelf/features/recipes/data/recipe_translator.dart';
 import 'package:chefs_shelf/features/recipes/domain/recipe.dart';
@@ -156,6 +157,101 @@ void main() {
       );
       await translator.translate(changed);
       expect(calls, previous + 1);
+    },
+  );
+
+  test(
+    'fraction and temperature changes are rejected while equivalent fractions work',
+    () async {
+      for (final entry in {
+        'Add ½ portion.': 'Adicione ¾ de porção.',
+        'Heat to 180°C.': 'Aqueça a 180°F.',
+      }.entries) {
+        final translator = RecipeTranslator(
+          MockClient(
+            (request) async => translated(
+              request.url.queryParameters['q'] == source.title
+                  ? 'Prato de exemplo'
+                  : entry.value,
+            ),
+          ),
+        );
+        final recipe = source.edited(
+          title: source.title,
+          ingredients: source.ingredients,
+          instructions: [entry.key],
+          notes: '',
+        );
+        await expectLater(
+          translator.translate(recipe),
+          throwsA(isA<AppFailure>()),
+        );
+      }
+      final translator = RecipeTranslator(
+        MockClient(
+          (request) async => translated(
+            request.url.queryParameters['q'] == source.title
+                ? 'Prato de exemplo'
+                : 'Adicione 1/2 porção.',
+          ),
+        ),
+      );
+      final recipe = source.edited(
+        title: source.title,
+        ingredients: source.ingredients,
+        instructions: ['Add ½ portion.'],
+        notes: '',
+      );
+      expect(
+        (await translator.translate(recipe)).instructions.single,
+        'Adicione 1/2 porção.',
+      );
+    },
+  );
+
+  test(
+    'reviewed catalogue recipe is fully available in Portuguese without a provider request',
+    () async {
+      final body =
+          jsonDecode(File('test/fixtures/arrabiata.json').readAsStringSync())
+              as Map<String, dynamic>;
+      final original = Recipe.fromMeal(
+        (body['meals'] as List).single as Map<String, dynamic>,
+      );
+      final translator = RecipeTranslator(
+        MockClient((_) async => throw StateError('Unexpected network')),
+      );
+      final result = await translator.translate(original);
+      expect(result.title, 'Penne ao molho arrabbiata');
+      expect(result.ingredients.length, 8);
+      expect(result.ingredients, contains('1/4 xícara de azeite'));
+      expect(result.ingredients.last, 'um pouco de queijo parmesão');
+      expect(result.instructions.first, contains('9 minutos'));
+      expect(result.validationError, isNull);
+    },
+  );
+
+  test(
+    'malformed payloads and network failures produce recoverable errors',
+    () async {
+      for (final response in [
+        http.Response('bad json', 200),
+        http.Response('{}', 200),
+        http.Response('unavailable', 503),
+      ]) {
+        final translator = RecipeTranslator(MockClient((_) async => response));
+        await expectLater(
+          translator.translate(source),
+          throwsA(isA<AppFailure>()),
+        );
+      }
+      final translator = RecipeTranslator(
+        MockClient((_) async => throw http.ClientException('offline')),
+      );
+      await expectLater(
+        translator.translate(source),
+        throwsA(isA<AppFailure>()),
+      );
     },
   );
 

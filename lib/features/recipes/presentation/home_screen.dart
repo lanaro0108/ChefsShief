@@ -404,7 +404,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               Text(
                 discovering
-                    ? 'Encontre uma nova inspiração e guarde o que der vontade de repetir.'
+                    ? 'Descubra novos sabores e leia as receitas em português ao abrir.'
                     : '${saved.length} receitas, muitas possibilidades. Tudo com o seu toque.',
                 style: const TextStyle(color: ShelfColors.muted, fontSize: 15),
               ),

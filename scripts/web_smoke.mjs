@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { chromium } from 'playwright-core';
 
 // Tests the compiled Flutter UI against the REAL local Firebase emulators and
@@ -20,6 +22,20 @@ const browser = await chromium.launch({
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
 const page = await context.newPage();
 page.setDefaultTimeout(25000);
+// In managed environments Chromium may lack the proxy CA in its own store.
+// Fetch the real SDK through curl's configured CA trust; TLS stays verified.
+// Public CI and normal browsers use their ordinary HTTPS transport.
+if (process.env.CHEFS_PROXY_CA_FETCH === '1') {
+  const resources = new Map();
+  const run = promisify(execFile);
+  await page.route('https://www.gstatic.com/firebasejs/**', async route => {
+    const url = route.request().url();
+    if (!resources.has(url)) {
+      resources.set(url, run('curl', ['--fail', '--silent', '--show-error', '--max-time', '30', url], {encoding: 'buffer', maxBuffer: 20 * 1024 * 1024}).then(result => result.stdout));
+    }
+    await route.fulfill({body: await resources.get(url), contentType: 'application/javascript', headers: {'access-control-allow-origin': '*'}});
+  });
+}
 await page.route('https://api.mymemory.translated.net/**', async route => {
   const source = new URL(route.request().url()).searchParams.get('q') ?? '';
   // Preserve all quantities while exercising the translated-view workflow.

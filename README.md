@@ -163,8 +163,8 @@ Um documento por receita em `users/{uid}/recipes/meal_{idMeal}`:
 
 ```javascript
 {
-  title: "Spicy Arrabiata Penne",
-  ingredients: ["1 pound penne rigate", "1/4 cup olive oil", "3 cloves garlic"],
+  title: "Penne ao molho arrabbiata",
+  ingredients: ["1 libra de penne rigate", "1/4 xícara de azeite", "3 dentes de alho"],
   instructions: ["Aqueça o azeite...", "Cozinhe a massa...", "Misture e sirva..."],
   imageUrl: "https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg",
   category: "Vegetarian",
@@ -231,7 +231,8 @@ Títulos usam Lora, incluída em `assets/fonts/Lora-Variable.ttf` sob a SIL Open
 
 Paleta atual: marfim `#F7F1E6`, papel `#FFFCF5`, oliva `#556B45`, vermelho de ação `#B83226` e tinta `#292820`. O vermelho `#FF3030` do logo é preservado.
 
-Paleta anterior: vermelho vibrante `#FF3030`, vermelho escuro `#D92525`, preto `#15191F`, branco `#FFFFFF`, fundo `#FAFAFA`, cinza claro `#F3F4F6`, texto secundário `#757575` e bordas `#E5E7EB`. Botões com texto branco usam vermelho escuro para legibilidade. O logo foi reproduzido em vetor a partir da referência fornecida, com três cápsulas vermelhas inclinadas e a assinatura Chef’s Shelf.
-
+O logo mantém as três cápsulas vermelhas inclinadas e a assinatura Chef’s Shelf. A fonte padrão de reserva do motor web também usa o arquivo local de Poppins, evitando uma busca externa por Roboto durante a inicialização.
 
 Os testes de tradução usam respostas controladas para verificar cache, preservação de quantidades, cotas e recuperação de falhas. No teste de navegador, apenas o serviço de tradução é simulado; Auth, Firestore e TheMealDB continuam reais. Em ambientes com lista de domínios permitidos, libere também `api.mymemory.translated.net` para validar a tradução ao vivo.
+
+Se o Chromium do ambiente gerenciado não conhecer a CA do proxy, execute o teste de navegador com `CHEFS_PROXY_CA_FETCH=1`. Essa opção busca os arquivos reais do SDK Firebase com `curl`, usando a CA configurada e verificação TLS ativa; o navegador recebe os mesmos módulos oficiais. Ela só muda o transporte do teste e não é usada pelo aplicativo nem pela CI pública.

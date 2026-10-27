@@ -83,7 +83,8 @@ class RecipeTranslator {
       translated.add(await _request(chunk));
     }
     final result = translated.join(' ');
-    if (_numbers(source) != _numbers(result)) {
+    if (_numbers(source) != _numbers(result) ||
+        _temperatures(source) != _temperatures(result)) {
       throw const AppFailure(
         'A tradução alterou uma quantidade. Consulte a receita original.',
       );
@@ -93,9 +94,32 @@ class RecipeTranslator {
     return result;
   }
 
-  static String _numbers(String value) => RegExp(
-    r'\d+(?:[.,]\d+)?',
-  ).allMatches(value).map((match) => match[0]!.replaceAll(',', '.')).join('|');
+  static String _numbers(String value) {
+    var normalized = value;
+    for (final fraction in const {
+      '¼': '1/4',
+      '½': '1/2',
+      '¾': '3/4',
+      '⅓': '1/3',
+      '⅔': '2/3',
+      '⅛': '1/8',
+      '⅜': '3/8',
+      '⅝': '5/8',
+      '⅞': '7/8',
+    }.entries) {
+      normalized = normalized.replaceAll(fraction.key, fraction.value);
+    }
+    return RegExp(r'\d+(?:[.,]\d+)?')
+        .allMatches(normalized)
+        .map((match) => match[0]!.replaceAll(',', '.'))
+        .join('|');
+  }
+
+  static String _temperatures(String value) =>
+      RegExp(r'°\s*[cf]', caseSensitive: false)
+          .allMatches(value)
+          .map((match) => match[0]!.replaceAll(' ', '').toUpperCase())
+          .join('|');
 
   /// The provider accepts 500 UTF-8 bytes per request. Split on whitespace
   /// with headroom, preserving quantities, temperatures and step order.
@@ -255,6 +279,7 @@ class RecipeTranslator {
     'tbsp': 'colher de sopa',
     'tsp': 'colher de chá',
     'pinch': 'pitada',
+    'sprinkling': 'um pouco',
     'to taste': 'a gosto',
     'tin': 'lata',
     'cans': 'latas',
@@ -326,6 +351,8 @@ class RecipeTranslator {
     'boil water.': 'Ferva a água.',
     'cook pasta.': 'Cozinhe a massa.',
     'serve.': 'Sirva.',
+    'bring a large pot of water to a boil. add kosher salt to the boiling water, then add the pasta. cook according to the package instructions, about 9 minutes.':
+        'Leve uma panela grande com água ao fogo até ferver. Adicione sal e depois a massa. Cozinhe conforme as instruções da embalagem, por cerca de 9 minutos.',
     'in a large skillet over medium-high heat, add the olive oil and heat until the oil starts to shimmer. add the garlic and cook, stirring, until fragrant, 1 to 2 minutes. add the chopped tomatoes, red chile flakes, italian seasoning and salt and pepper to taste. bring to a boil and cook for 5 minutes. remove from the heat and add the chopped basil.':
         'Em uma frigideira grande, aqueça o azeite em fogo médio-alto até começar a brilhar. Acrescente o alho e refogue, mexendo, até perfumar, por 1 a 2 minutos. Adicione os tomates picados, a pimenta calabresa, as ervas italianas, o sal e a pimenta a gosto. Deixe ferver e cozinhe por 5 minutos. Retire do fogo e acrescente o manjericão picado.',
     'drain the pasta and add it to the sauce. garnish with parmigiano-reggiano flakes and more basil and serve warm.':
