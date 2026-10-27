@@ -95,6 +95,22 @@ flutter run -d SEU_DISPOSITIVO --dart-define-from-file=config/firebase.android.j
 flutter build apk --release --dart-define-from-file=config/firebase.android.json
 ```
 
+### Executar pelo Android Studio ou VS Code
+
+O arquivo `config/firebase.android.json` é carregado na compilação pela opção `--dart-define-from-file`. Os quatro campos obrigatórios são `FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_PROJECT_ID` e `FIREBASE_MESSAGING_SENDER_ID`; todos devem estar preenchidos com os valores do aplicativo Android registrado no Firebase.
+
+No **Android Studio**, abra **Run → Edit Configurations**, selecione a configuração Flutter de `lib/main.dart` e coloque em **Additional run args**:
+
+```text
+--dart-define-from-file=config/firebase.android.json
+```
+
+Salve, encerre a execução anterior pelo botão Stop e execute novamente. Use a raiz do projeto Flutter como diretório de trabalho. Alterações em `dart-define` exigem uma nova execução completa; hot reload não atualiza essas opções.
+
+No **VS Code**, selecione **Chef's Shelf - Android com Firebase** em **Run and Debug**, escolha o dispositivo Android e pressione F5. Essa configuração já está em `.vscode/launch.json`.
+
+Se aparecer **Vamos preparar a cozinha?**, pelo menos um dos quatro campos obrigatórios está vazio ou não foi passado à execução. Confira o nome do arquivo e os nomes dos campos. O JSON deve conter os campos `FIREBASE_...` descritos acima; os dados necessários podem ser obtidos no `google-services.json` nas configurações do aplicativo Android no console Firebase.
+
 Desenvolvimento com o emulador Android padrão:
 
 ```bash

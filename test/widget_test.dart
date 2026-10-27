@@ -28,7 +28,11 @@ void main() {
     (tester) async {
       await tester.pumpWidget(const SetupApp());
       expect(find.text('Vamos preparar a cozinha?'), findsOneWidget);
-      expect(find.textContaining('scripts/run_local.sh'), findsOneWidget);
+      expect(
+        find.textContaining('config/firebase.android.json'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('--dart-define-from-file='), findsOneWidget);
     },
   );
   testWidgets(

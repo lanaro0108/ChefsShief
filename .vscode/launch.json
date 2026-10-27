@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Chef's Shelf - Android com Firebase",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "cwd": "${workspaceFolder}",
+      "flutterMode": "debug",
+      "toolArgs": ["--dart-define-from-file=config/firebase.android.json"]
+    },
+    {
+      "name": "Chef's Shelf - Web com Firebase",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "cwd": "${workspaceFolder}",
+      "deviceId": "chrome",
+      "toolArgs": ["--dart-define-from-file=config/firebase.json"]
+    }
+  ]
+}

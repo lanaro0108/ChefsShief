@@ -79,7 +79,11 @@ class SetupApp extends StatelessWidget {
             : 'Vamos preparar a cozinha?',
         message: initializationFailed
             ? 'Confira a configuração Firebase e a conexão. Se estiver em modo local, inicie os emuladores. Consulte o README do projeto.'
-            : 'Configure o projeto Firebase seguindo o README ou execute scripts/run_local.sh para usar os emuladores de desenvolvimento.',
+            : 'Os dados do Firebase não foram recebidos na inicialização. '
+                  'Para Android, preencha config/firebase.android.json e execute:\n\n'
+                  'flutter run --dart-define-from-file=config/firebase.android.json\n\n'
+                  'No Android Studio, adicione essa opção em Additional run args. '
+                  'Encerre a execução atual antes de iniciar novamente.',
       ),
     ),
   );
