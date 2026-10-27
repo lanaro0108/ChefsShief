@@ -158,9 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ],
                                       child: CircleAvatar(
-                                        backgroundColor: const Color(
-                                          0xFFE7EBD9,
-                                        ),
+                                        backgroundColor: ShelfColors.subtle,
                                         child: Text(
                                           (widget
                                                           .user
@@ -172,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               .substring(0, 1)
                                               .toUpperCase(),
                                           style: const TextStyle(
-                                            color: ShelfColors.green,
+                                            color: ShelfColors.primary,
                                             fontWeight: FontWeight.w700,
                                           ),
                                         ),
@@ -257,13 +255,13 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            color: const Color(0xFFF1F3E7),
+            color: ShelfColors.subtle,
             borderRadius: BorderRadius.circular(16),
           ),
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.eco_outlined, color: ShelfColors.green),
+              Icon(Icons.eco_outlined, color: ShelfColors.primary),
               SizedBox(height: 12),
               Text(
                 'Uma pitada de inspiração',
@@ -292,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _navigationItem(int tab, IconData icon, String label, {int? count}) =>
       Material(
-        color: _tab == tab ? ShelfColors.green : Colors.transparent,
+        color: _tab == tab ? ShelfColors.darkRed : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
@@ -362,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 discovering ? 'PARA O SEU PRÓXIMO PRATO' : 'SABORES QUE FICAM',
                 style: const TextStyle(
-                  color: ShelfColors.orange,
+                  color: ShelfColors.darkRed,
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 2,
@@ -390,7 +388,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEAF0E3),
+                    color: ShelfColors.subtle,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -398,7 +396,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Icon(
                         Icons.soup_kitchen_outlined,
                         size: 46,
-                        color: ShelfColors.green,
+                        color: ShelfColors.primary,
                       ),
                       const SizedBox(width: 20),
                       Expanded(
@@ -412,7 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(height: 5),
                             const Text(
                               'Explore receitas de diferentes lugares com o TheMealDB.',
-                              style: TextStyle(color: ShelfColors.green),
+                              style: TextStyle(color: ShelfColors.darkRed),
                             ),
                           ],
                         ),

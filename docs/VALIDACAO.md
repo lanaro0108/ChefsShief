@@ -20,11 +20,13 @@ As regras foram testadas com todos os **40 itens** em ambos os arrays, inclusive
 
 Um teste de regressão verifica que campos opcionais Firebase não configurados são enviados como ausentes nas opções do SDK. O caso reproduziu o domínio vazio que fazia o Firebase Auth Android lançar `Given String is empty or null` ao cadastrar um usuário.
 
+A identidade visual foi atualizada com Poppins local, a paleta vermelha solicitada e a reprodução vetorial do logo. Após essa alteração, a análise estática e os 13 testes Flutter passaram, o APK Android ARM64 foi recompilado e o fluxo completo no navegador foi repetido em desktop e celular.
+
 Capturas reais do fluxo estão em [screenshots/](screenshots/). O APK local fica em `build/app/outputs/flutter-apk/app-debug.apk`; arquivos gerados, caches e logs não são versionados.
 
 ## O que ainda depende de configuração externa
 
-- **Projeto Firebase de produção:** o usuário informou que ainda não possui um. Nenhum projeto foi criado ou publicado. Siga o README para habilitar Email/Password, criar Firestore, registrar os apps e publicar as regras.
+- **Projeto Firebase de produção:** o usuário configurou o projeto `chefs-db` no próprio computador e confirmou o funcionamento do aplicativo. Os testes automatizados deste ambiente usam os emuladores; não houve acesso administrativo, alteração de configurações ou publicação de regras nesse projeto por aqui.
 - **Aplicação na nuvem:** não houve deploy em Firebase Hosting ou distribuição em loja. O build local usa o projeto de demonstração dos emuladores.
 - **Android em dispositivo:** o APK foi compilado; não foi executado em um telefone ou emulador do sistema Android neste ambiente. O endereço `10.0.2.2` foi configurado para desenvolvimento com um emulador Android na mesma máquina dos serviços Firebase.
 - **iOS:** não foi incluído nem validado; requer um ambiente macOS/Xcode.

@@ -95,7 +95,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           'Ambiente local · Contas e receitas de teste',
                           style: TextStyle(
                             fontSize: 12,
-                            color: ShelfColors.orange,
+                            color: ShelfColors.darkRed,
                           ),
                         ),
                       ],
@@ -264,7 +264,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 child: Container(
                   margin: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: ShelfColors.green,
+                    color: ShelfColors.ink,
                     borderRadius: BorderRadius.circular(30),
                   ),
                   padding: const EdgeInsets.all(48),
@@ -274,7 +274,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     children: [
                       const Icon(
                         Icons.soup_kitchen_outlined,
-                        color: Color(0xFFD6DEA9),
+                        color: ShelfColors.white,
                         size: 100,
                       ),
                       const SizedBox(height: 38),
@@ -292,7 +292,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       const Text(
                         'Descubra, experimente e guarde.\nSua história na cozinha começa com uma receita.',
                         style: TextStyle(
-                          color: Color(0xFFD9E5D5),
+                          color: ShelfColors.white,
                           fontSize: 18,
                           height: 1.7,
                         ),
@@ -310,7 +310,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 .map(
                                   (text) => Chip(
                                     color: const WidgetStatePropertyAll(
-                                      Color(0xFF3E634E),
+                                      ShelfColors.darkRed,
                                     ),
                                     backgroundColor: Colors.white.withValues(
                                       alpha: .1,

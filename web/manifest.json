@@ -3,10 +3,18 @@
   "short_name": "Chef’s Shelf",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#FAF8F3",
-  "theme_color": "#244C3B",
+  "background_color": "#FAFAFA",
+  "theme_color": "#FF3030",
   "description": "Descubra, salve e personalize suas receitas favoritas.",
   "orientation": "any",
   "lang": "pt-BR",
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
 }

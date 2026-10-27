@@ -1,12 +1,5 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="64dp" android:height="64dp"
-    android:viewportWidth="64" android:viewportHeight="64">
-    <path android:fillColor="#244C3B"
-        android:pathData="M16,0 H48 Q64,0 64,16 V48 Q64,64 48,64 H16 Q0,64 0,48 V16 Q0,0 16,0 Z"/>
-    <path android:fillColor="#00000000" android:strokeColor="#FFFFFF"
-        android:strokeWidth="3.5" android:strokeLineCap="round" android:strokeLineJoin="round"
-        android:pathData="M18,16 V28 C18,35 30,35 30,28 V16 M24,16 V49 M18,25 H30"/>
-    <path android:fillColor="#00000000" android:strokeColor="#FFFFFF"
-        android:strokeWidth="3.5" android:strokeLineCap="round"
-        android:pathData="M49,24 C49,36 37,36 37,24 C37,12 49,12 49,24 Z M43,33 V49"/>
+ android:width="64dp" android:height="64dp" android:viewportWidth="64" android:viewportHeight="64">
+ <path android:fillColor="#FFFFFF" android:pathData="M14,0 H50 Q64,0 64,14 V50 Q64,64 50,64 H14 Q0,64 0,50 V14 Q0,0 14,0 Z"/>
+ <group android:translateX="10" android:translateY="18" android:scaleX="0.126" android:scaleY="0.126"><group android:translateX="68" android:translateY="125" android:rotation="-25"><path android:fillColor="#FF3030" android:pathData="M -44 -48.0 A 44 44 0 0 1 44 -48.0 L 44 48.0 A 44 44 0 0 1 -44 48.0 Z"/></group><group android:translateX="177" android:translateY="116" android:rotation="-25"><path android:fillColor="#FF3030" android:pathData="M -44 -61.0 A 44 44 0 0 1 44 -61.0 L 44 61.0 A 44 44 0 0 1 -44 61.0 Z"/></group><group android:translateX="281" android:translateY="91" android:rotation="-25"><path android:fillColor="#FF3030" android:pathData="M -44 -51.0 A 44 44 0 0 1 44 -51.0 L 44 51.0 A 44 44 0 0 1 -44 51.0 Z"/></group></group>
 </vector>

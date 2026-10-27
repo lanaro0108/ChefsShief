@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <meta name="description" content="Chef’s Shelf: descubra receitas do mundo e guarde-as em um caderno só seu.">
-  <meta name="theme-color" content="#244C3B">
+  <meta name="theme-color" content="#FF3030">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Chef’s Shelf">
@@ -14,16 +14,18 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <title>Chef’s Shelf · Seu caderno de receitas</title>
   <style>
-    body { margin: 0; background: #faf8f3; }
+    @font-face { font-family: Poppins; src: url('assets/assets/fonts/Poppins-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: Poppins; src: url('assets/assets/fonts/Poppins-ExtraBold.ttf') format('truetype'); font-weight: 800; font-display: swap; }
+    body { margin: 0; background: #fafafa; }
     #loading { min-height: 100vh; display: grid; place-content: center; text-align: center;
-      font: 16px system-ui, sans-serif; color: #244c3b; }
-    #loading strong { font-size: 30px; letter-spacing: -1px; }
+      font: 16px Poppins, sans-serif; color: #15191f; }
+    #loading strong { font-size: 30px; font-weight: 800; letter-spacing: -1px; }
     /* The app shows its own localized emulator notice on Auth and Home. */
     .firebase-emulator-warning { display: none; }
   </style>
 </head>
 <body>
-  <div id="loading" role="status"><strong>Chef’s Shelf</strong><p>Preparando a cozinha…</p></div>
+  <div id="loading" role="status"><img src="logo.svg" width="280" alt="Chef’s Shelf"><p>Preparando a cozinha…</p></div>
   <script>
     window.addEventListener('flutter-first-frame', () => document.getElementById('loading')?.remove());
   </script>

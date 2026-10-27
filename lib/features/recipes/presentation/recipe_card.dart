@@ -109,7 +109,7 @@ class RecipeCard extends StatelessWidget {
                                 saved
                                     ? Icons.bookmark_rounded
                                     : Icons.bookmark_add_outlined,
-                                color: ShelfColors.green,
+                                color: ShelfColors.primary,
                               ),
                       ),
                     ],

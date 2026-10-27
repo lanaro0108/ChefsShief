@@ -152,7 +152,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                             padding: EdgeInsets.only(bottom: 16),
                             child: Text(
                               'Não foi possível sincronizar o caderno. Confira sua conexão.',
-                              style: TextStyle(color: ShelfColors.orange),
+                              style: TextStyle(color: ShelfColors.darkRed),
                             ),
                           ),
                         LayoutBuilder(
@@ -172,7 +172,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                       ? 'NO SEU CADERNO'
                                       : 'UMA NOVA DESCOBERTA',
                                   style: const TextStyle(
-                                    color: ShelfColors.orange,
+                                    color: ShelfColors.darkRed,
                                     letterSpacing: 2,
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
@@ -362,13 +362,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                       children: [
                                         CircleAvatar(
                                           radius: 18,
-                                          backgroundColor: const Color(
-                                            0xFFEAF0E3,
-                                          ),
+                                          backgroundColor: ShelfColors.subtle,
                                           child: Text(
                                             '${e.key + 1}',
                                             style: const TextStyle(
-                                              color: ShelfColors.green,
+                                              color: ShelfColors.darkRed,
                                               fontSize: 13,
                                               fontWeight: FontWeight.w700,
                                             ),
@@ -393,7 +391,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                     width: double.infinity,
                                     padding: const EdgeInsets.all(22),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFF5EDD9),
+                                      color: ShelfColors.subtle,
                                       borderRadius: BorderRadius.circular(16),
                                     ),
                                     child: Column(

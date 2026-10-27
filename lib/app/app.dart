@@ -96,11 +96,11 @@ class EmulatorNotice extends StatelessWidget {
       ? Container(
           width: double.infinity,
           padding: const EdgeInsets.all(7),
-          color: const Color(0xFFFFE9C2),
+          color: ShelfColors.subtle,
           child: const Text(
             'Ambiente local · Contas e receitas de teste',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: Color(0xFF6F4514)),
+            style: TextStyle(fontSize: 12, color: ShelfColors.ink),
           ),
         )
       : const SizedBox.shrink();

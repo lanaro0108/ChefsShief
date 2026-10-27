@@ -1,38 +1,82 @@
 import 'package:flutter/material.dart';
 import '../app/theme.dart';
 
+/// Vector rendition of the supplied mark: three slanted red capsules.
+class BrandMark extends StatelessWidget {
+  const BrandMark({super.key, this.width = 52});
+  final double width;
+
+  @override
+  Widget build(BuildContext context) => CustomPaint(
+    size: Size(width, width * .64),
+    painter: const _BrandMarkPainter(),
+  );
+}
+
+class _BrandMarkPainter extends CustomPainter {
+  const _BrandMarkPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(size.width / 350, size.height / 220);
+    final paint = Paint()..color = ShelfColors.primary;
+    for (final (x, y, height) in [
+      (68.0, 125.0, 184.0),
+      (177.0, 116.0, 210.0),
+      (281.0, 91.0, 190.0),
+    ]) {
+      canvas.save();
+      canvas.translate(x, y);
+      canvas.rotate(-.436332313);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(center: Offset.zero, width: 88, height: height),
+          const Radius.circular(44),
+        ),
+        paint,
+      );
+      canvas.restore();
+    }
+  }
+
+  @override
+  bool shouldRepaint(_BrandMarkPainter oldDelegate) => false;
+}
+
 class Brand extends StatelessWidget {
   const Brand({super.key, this.light = false});
   final bool light;
+
   @override
-  Widget build(BuildContext context) => Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: light
-              ? Colors.white.withValues(alpha: .15)
-              : ShelfColors.green,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: const Icon(
-          Icons.restaurant_menu_rounded,
-          color: Colors.white,
-          size: 25,
+  Widget build(BuildContext context) => Semantics(
+    label: "Chef’s Shelf",
+    image: true,
+    excludeSemantics: true,
+    child: SizedBox(
+      width: 224,
+      height: 44,
+      child: FittedBox(
+        fit: BoxFit.contain,
+        alignment: Alignment.centerLeft,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const BrandMark(),
+            const SizedBox(width: 8),
+            Text(
+              "Chef’s Shelf",
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 26,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -1.2,
+                color: light ? ShelfColors.white : ShelfColors.ink,
+              ),
+            ),
+          ],
         ),
       ),
-      const SizedBox(width: 10),
-      Text(
-        "Chef’s Shelf",
-        style: TextStyle(
-          fontSize: 23,
-          fontWeight: FontWeight.w800,
-          letterSpacing: -.8,
-          color: light ? Colors.white : ShelfColors.green,
-        ),
-      ),
-    ],
+    ),
   );
 }
 
@@ -59,8 +103,8 @@ class StatusPanel extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 38,
-              backgroundColor: const Color(0xFFEAF0E6),
-              child: Icon(icon, size: 34, color: ShelfColors.green),
+              backgroundColor: ShelfColors.subtle,
+              child: Icon(icon, size: 34, color: ShelfColors.primary),
             ),
             const SizedBox(height: 22),
             Text(
@@ -95,12 +139,12 @@ class RecipeImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final fallback = Container(
       height: height,
-      color: const Color(0xFFE9EBDD),
+      color: ShelfColors.subtle,
       alignment: Alignment.center,
       child: const Icon(
         Icons.ramen_dining_rounded,
         size: 58,
-        color: ShelfColors.green,
+        color: ShelfColors.primary,
       ),
     );
     if (url.isEmpty) return fallback;

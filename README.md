@@ -216,3 +216,9 @@ Veja [docs/ENTREGA.md](docs/ENTREGA.md) para roteiro e requisitos e [docs/VALIDA
 ## Git e entrega
 
 Revise `git diff` e rode os testes antes dos commits. Use mensagens para mudanças reais: `feat: adiciona caderno pessoal de receitas`, `test: valida isolamento do Firestore` ou `docs: explica execução e publicação`. A CI fica em `.github/workflows/ci.yml`. Não versione senhas, tokens administrativos, keystores ou contas de serviço.
+
+### Identidade visual
+
+Tipografia Poppins incluída no aplicativo (pesos 400, 500, 600, 700 e 800), licenciada sob a SIL Open Font License em `assets/fonts/Poppins-OFL.txt`. Não há download de fontes durante o uso.
+
+Paleta: vermelho vibrante `#FF3030`, vermelho escuro `#D92525`, preto `#15191F`, branco `#FFFFFF`, fundo `#FAFAFA`, cinza claro `#F3F4F6`, texto secundário `#757575` e bordas `#E5E7EB`. Botões com texto branco usam vermelho escuro para legibilidade. O logo foi reproduzido em vetor a partir da referência fornecida, com três cápsulas vermelhas inclinadas e a assinatura Chef’s Shelf.
