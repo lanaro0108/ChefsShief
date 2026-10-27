@@ -10,7 +10,7 @@ class RecipeSearchController extends ChangeNotifier {
   List<Recipe> recipes = [];
   bool loading = false;
   String? error;
-  String query = 'chicken';
+  String query = 'frango';
   int _generation = 0;
   bool _disposed = false;
   Timer? _debounce;

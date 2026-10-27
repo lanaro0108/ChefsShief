@@ -3,7 +3,8 @@ import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 
 // Tests the compiled Flutter UI against the REAL local Firebase emulators and
-// the REAL TheMealDB API. No production credentials, seeded accounts or API mocks.
+// the REAL TheMealDB API. Translation alone is stubbed to avoid public-service quotas.
+// No production credentials or pre-seeded accounts are used.
 const baseUrl = process.env.CHEFS_WEB_URL ?? 'http://127.0.0.1:7357';
 assert.equal(new URL(baseUrl).hostname, '127.0.0.1', 'Smoke tests only target the local development app.');
 const output = process.env.CHEFS_SCREENSHOT_DIR ?? '/tmp/chefs-shelf-screenshots';
@@ -19,6 +20,16 @@ const browser = await chromium.launch({
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
 const page = await context.newPage();
 page.setDefaultTimeout(25000);
+await page.route('https://api.mymemory.translated.net/**', async route => {
+  const source = new URL(route.request().url()).searchParams.get('q') ?? '';
+  // Preserve all quantities while exercising the translated-view workflow.
+  const amounts = source.match(/[0-9]+(?:[.,][0-9]+)?/g) ?? [];
+  await route.fulfill({
+    contentType: 'application/json',
+    headers: {'access-control-allow-origin': '*'},
+    body: JSON.stringify({responseStatus: 200, responseData: {translatedText: 'Preparo em português. ' + amounts.join(' ')}}),
+  });
+});
 const errors = [];
 page.on('pageerror', error => errors.push(error.message));
 const email = `chef-web-${Date.now()}@example.com`;
@@ -68,11 +79,16 @@ try {
   const search = page.getByRole('textbox', {name:'Buscar receitas', exact:true});
   await fillField(page, search, 'Arrabiata');
   await page.getByRole('button', {name:'Buscar agora', exact:true}).click();
-  await page.getByRole('button', {name:'Abrir receita Spicy Arrabiata Penne', exact:true}).waitFor();
+  await page.getByRole('button', {name:'Abrir receita Penne ao molho arrabbiata', exact:true}).waitFor();
   await page.screenshot({path:`${output}/02-descoberta-desktop.png`});
-  await page.getByRole('button', {name:'Abrir receita Spicy Arrabiata Penne', exact:true}).click();
+  await page.getByRole('button', {name:'Abrir receita Penne ao molho arrabbiata', exact:true}).click();
   await page.getByText('Na bancada', {exact:true}).waitFor();
   await page.getByText('Mãos à massa', {exact:true}).waitFor();
+  await page.getByText('RECEITA EM PORTUGUÊS', {exact:true}).waitFor();
+  await page.getByRole('checkbox', {name:'1/4 xícara de azeite', exact:true}).waitFor();
+  await page.getByRole('button', {name:'Ver original', exact:true}).click();
+  await page.getByText('Spicy Arrabiata Penne', {exact:true}).waitFor();
+  await page.getByRole('button', {name:'Voltar à receita', exact:true}).click();
   await page.getByRole('button', {name:'Salvar no caderno', exact:true}).click();
   await page.getByRole('button', {name:'Dar meu toque', exact:true}).waitFor();
   console.log('PASS: Real TheMealDB search, complete details and Firestore creation.');

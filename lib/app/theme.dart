@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 
 abstract final class ShelfColors {
   static const primary = Color(0xFFFF3030);
-  static const darkRed = Color(0xFFD92525);
-  static const ink = Color(0xFF15191F);
+  static const darkRed = Color(0xFFB83226);
+  static const ink = Color(0xFF292820);
+  static const olive = Color(0xFF556B45);
+  static const paper = Color(0xFFFFFCF5);
   static const white = Color(0xFFFFFFFF);
-  static const background = Color(0xFFFAFAFA);
-  static const subtle = Color(0xFFF3F4F6);
-  static const muted = Color(0xFF757575);
-  static const line = Color(0xFFE5E7EB);
+  static const background = Color(0xFFF7F1E6);
+  static const subtle = Color(0xFFEDE5D8);
+  static const muted = Color(0xFF74695D);
+  static const line = Color(0xFFDED3C2);
 }
 
 ThemeData shelfTheme() => ThemeData(
@@ -37,23 +39,26 @@ ThemeData shelfTheme() => ThemeData(
     onError: ShelfColors.white,
     surfaceTint: Colors.transparent,
   ),
-  scaffoldBackgroundColor: ShelfColors.background,
+  scaffoldBackgroundColor: Colors.transparent,
   textTheme: const TextTheme(
     headlineLarge: TextStyle(
-      fontSize: 38,
+      fontFamily: 'Lora',
+      fontSize: 40,
       fontWeight: FontWeight.w800,
       height: 1.15,
       letterSpacing: -1.4,
       color: ShelfColors.ink,
     ),
     headlineMedium: TextStyle(
-      fontSize: 28,
+      fontFamily: 'Lora',
+      fontSize: 30,
       fontWeight: FontWeight.w700,
       letterSpacing: -.7,
       color: ShelfColors.ink,
     ),
     titleLarge: TextStyle(
-      fontSize: 21,
+      fontFamily: 'Lora',
+      fontSize: 23,
       fontWeight: FontWeight.w700,
       color: ShelfColors.ink,
     ),
@@ -114,7 +119,7 @@ ThemeData shelfTheme() => ThemeData(
     ),
   ),
   cardTheme: CardThemeData(
-    color: Colors.white,
+    color: ShelfColors.paper,
     elevation: 0,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(20),

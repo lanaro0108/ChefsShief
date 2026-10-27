@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import '../../../app/app.dart';
 import '../../../app/theme.dart';
 import '../../../core/widgets.dart';
+import '../../../core/app_failure.dart';
 import '../../auth/auth_service.dart';
 import '../data/meal_api.dart';
 import '../data/notebook_repository.dart';
 import '../domain/recipe.dart';
+import '../domain/recipe_language.dart';
+import 'discovery_hero.dart';
 import 'recipe_card.dart';
 import 'recipe_detail_screen.dart';
 import 'search_controller.dart';
@@ -31,9 +34,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final RecipeSearchController _search;
   late Stream<List<Recipe>> _notebook;
-  final _query = TextEditingController(text: 'chicken');
+  final _query = TextEditingController(text: 'frango');
   final _notebookQuery = TextEditingController();
   final _saving = <String>{};
+  final _opening = <String>{};
   int _tab = 0;
   String _category = 'Todas';
   bool _alphabetical = false;
@@ -43,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _search = RecipeSearchController(widget.api);
     _notebook = widget.notebook.watchAll(widget.user.uid);
-    unawaited(_search.search('chicken'));
+    unawaited(_search.search('frango'));
   }
 
   @override
@@ -57,7 +61,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _save(Recipe recipe) async {
     setState(() => _saving.add(recipe.id));
     try {
-      final created = await widget.notebook.save(widget.user.uid, recipe);
+      final complete = await widget.api.complete(recipe);
+      final translated = await widget.api.translator.translate(complete);
+      final created = await widget.notebook.save(widget.user.uid, translated);
       if (mounted) {
         showMessage(
           context,
@@ -66,11 +72,11 @@ class _HomeScreenState extends State<HomeScreen> {
               : 'Esta receita já está no seu caderno.',
         );
       }
-    } catch (_) {
+    } catch (failure) {
       if (mounted) {
         showMessage(
           context,
-          'Não foi possível salvar. Confira sua conexão e tente novamente.',
+          failure is AppFailure ? failure.message : 'Não foi possível salvar. Confira sua conexão e tente novamente.',
         );
       }
     } finally {
@@ -78,17 +84,30 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _open(Recipe recipe, bool saved) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => RecipeDetailScreen(
-          initial: recipe,
-          initiallySaved: saved,
-          uid: widget.user.uid,
-          notebook: widget.notebook,
+  Future<void> _open(Recipe recipe, bool saved) async {
+    if (_opening.contains(recipe.id)) return;
+    setState(() => _opening.add(recipe.id));
+    try {
+      final complete = saved ? recipe : await widget.api.complete(recipe);
+      if (!mounted) return;
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder: (_) => RecipeDetailScreen(
+            initial: complete,
+            initiallySaved: saved,
+            uid: widget.user.uid,
+            notebook: widget.notebook,
+            api: widget.api,
+          ),
         ),
-      ),
-    );
+      );
+    } catch (failure) {
+      if (mounted) {
+        showMessage(context, failure is AppFailure ? failure.message : 'Não foi possível abrir a receita. Tente novamente.');
+      }
+    } finally {
+      if (mounted) setState(() => _opening.remove(recipe.id));
+    }
   }
 
   Future<void> _signOut() async {
@@ -223,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _sidebar(int count) => Container(
     width: 238,
     decoration: const BoxDecoration(
-      color: Colors.white,
+      color: ShelfColors.paper,
       border: Border(right: BorderSide(color: ShelfColors.line)),
     ),
     padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
@@ -383,43 +402,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: const TextStyle(color: ShelfColors.muted, fontSize: 15),
               ),
               const SizedBox(height: 26),
-              if (discovering) ...[
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: ShelfColors.subtle,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.soup_kitchen_outlined,
-                        size: 46,
-                        color: ShelfColors.primary,
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Do mundo para a sua cozinha',
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 5),
-                            const Text(
-                              'Explore receitas de diferentes lugares com o TheMealDB.',
-                              style: TextStyle(color: ShelfColors.darkRed),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-              ],
               TextField(
                 key: Key(discovering ? 'recipe-search' : 'notebook-search'),
                 controller: discovering ? _query : _notebookQuery,
@@ -429,7 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? 'Buscar receitas'
                       : 'Buscar no meu caderno',
                   hintText: discovering
-                      ? 'Ex.: chicken, pasta, cake...'
+                      ? 'Ex.: frango, massa, bolo de chocolate...'
                       : 'Qual receita você quer preparar?',
                   suffixIcon: discovering
                       ? IconButton(
@@ -448,7 +430,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               if (discovering) ...[
                 const Text(
-                  'Dica: o catálogo internacional encontra receitas pelo nome em inglês.',
+                  'Busque em português pelas sugestões ou use o nome original do prato.',
                   style: TextStyle(color: ShelfColors.muted, fontSize: 12),
                 ),
                 const SizedBox(height: 16),
@@ -457,10 +439,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   runSpacing: 8,
                   children:
                       {
-                            'Frango': 'chicken',
-                            'Massas': 'pasta',
-                            'Sobremesas': 'cake',
-                            'Vegetariano': 'vegetarian',
+                            'Frango': 'frango',
+                            'Massas': 'massas',
+                            'Sobremesas': 'sobremesas',
+                            'Vegetariano': 'vegetariano',
                           }.entries
                           .map(
                             (e) => ActionChip(
@@ -482,7 +464,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     ...categories.map(
                       (category) => ChoiceChip(
-                        label: Text(category),
+                        label: Text(RecipeLanguage.category(category)),
                         selected: _category == category,
                         onSelected: (_) => setState(() => _category = category),
                       ),
@@ -539,7 +521,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? 'Seu caderno começa com uma receita'
                       : 'Nenhuma receita com esse filtro',
                   message: discovering
-                      ? 'Experimente outro nome em inglês, como chicken ou cake.'
+                      ? 'Experimente frango, massas, bolo ou o nome original do prato.'
                       : saved.isEmpty
                       ? 'Descubra um prato e toque no marcador para guardar a receita aqui.'
                       : 'Tente outro nome ou escolha outra categoria.',
@@ -551,6 +533,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       : null,
                 )
               else ...[
+                if (discovering) ...[
+                  DiscoveryHero(
+                    recipe: _search.recipes.first,
+                    title: widget.api.translator.titleFor(_search.recipes.first),
+                    busy: _opening.contains(_search.recipes.first.id),
+                    onOpen: () => _open(_search.recipes.first, saved.any((recipe) => recipe.id == _search.recipes.first.id)),
+                  ),
+                  const SizedBox(height: 30),
+                ],
                 Row(
                   children: [
                     Text(
@@ -590,9 +581,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: width,
                           child: RecipeCard(
                             recipe: recipe,
+                            displayTitle: widget.api.translator.titleFor(recipe),
                             saved: isSaved,
-                            busy: _saving.contains(recipe.id),
-                            onOpen: () => _open(recipe, isSaved),
+                            busy: _saving.contains(recipe.id) || _opening.contains(recipe.id),
+                            onOpen: () => _open(saved.where((savedRecipe) => savedRecipe.id == recipe.id).firstOrNull ?? recipe, isSaved),
                             onSave: () => _save(recipe),
                           ),
                         );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../app/theme.dart';
 import '../../../core/widgets.dart';
 import '../domain/recipe.dart';
+import '../domain/recipe_language.dart';
 
 class RecipeCard extends StatelessWidget {
   const RecipeCard({
@@ -11,8 +12,10 @@ class RecipeCard extends StatelessWidget {
     required this.onOpen,
     required this.onSave,
     this.busy = false,
+    this.displayTitle,
   });
   final Recipe recipe;
+  final String? displayTitle;
   final bool saved;
   final bool busy;
   final VoidCallback onOpen;
@@ -22,7 +25,7 @@ class RecipeCard extends StatelessWidget {
     container: true,
     explicitChildNodes: true,
     button: true,
-    label: 'Abrir receita ${recipe.title}',
+    label: 'Abrir receita ${displayTitle ?? recipe.title}',
     onTap: onOpen,
     child: Card(
       margin: EdgeInsets.zero,
@@ -35,7 +38,7 @@ class RecipeCard extends StatelessWidget {
           children: [
             Stack(
               children: [
-                RecipeImage(url: recipe.imageUrl, height: 185),
+                RecipeImage(url: recipe.imageUrl, height: 210),
                 if (recipe.category.isNotEmpty)
                   Positioned(
                     left: 12,
@@ -50,7 +53,7 @@ class RecipeCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        recipe.category,
+                        RecipeLanguage.category(recipe.category),
                         style: const TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -66,12 +69,15 @@ class RecipeCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    recipe.title,
+                    displayTitle ?? recipe.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: const TextStyle(fontFamily: 'Lora', fontSize: 20, fontWeight: FontWeight.w600, height: 1.35),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
+                  if (!recipe.isPreview)
+                    Text('${recipe.ingredients.length} ingredientes', style: const TextStyle(color: ShelfColors.muted, fontSize: 11)),
+                  const SizedBox(height: 6),
                   Row(
                     children: [
                       const Icon(
@@ -84,7 +90,7 @@ class RecipeCard extends StatelessWidget {
                         child: Text(
                           recipe.area.isEmpty
                               ? 'Cozinha do mundo'
-                              : recipe.area,
+                              : RecipeLanguage.area(recipe.area),
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 12,
